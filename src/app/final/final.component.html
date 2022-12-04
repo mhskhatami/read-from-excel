@@ -1,0 +1,43 @@
+<div (dragover)="onDragOver($event)" (drop)="onDrop($event)">
+    <button (click)="fileInput.click()"  [disabled]="false" class="button">
+        <span>ورود اطلاعات از طریق فایل اکسل</span>
+    </button>
+    <input #fileInput type="file" accept=".csv,.xlsx" (change)="onFileInputChanged($event)" style="display: none;">    
+</div>
+
+<div>
+    <app-dialog-error [error]='columnsNumberError' style="display: none !important;"></app-dialog-error>
+    <!-- <button #errorBtn mat-button (click)="openDialog()" style="display: none;">Launch dialog</button> -->
+</div>
+<div>
+    <button nz-button (click)="addRow()" nzType="primary">Add</button>
+    <br />
+    <br />
+    <nz-table #editRowTable nzBordered [nzData]="listOfData">
+      <thead>
+        <tr>
+          <th nzWidth="30%">Name</th>
+          <th>Age</th>
+          <th>Address</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of listOfData;" class="editable-row">
+          <td>
+            <div class="editable-cell" [hidden]="editId === data.id" (click)="startEdit(data.id)">
+              {{ data.name }}
+            </div>
+            <input [hidden]="editId !== data.id" type="text" nz-input [(ngModel)]="data.name" (blur)="stopEdit()" />
+          </td>
+          <td>{{ data.age }}</td>
+          <td>{{ data.address }}</td>
+          <td>
+            <a nz-popconfirm nzOkText="بله" style="direction: rtl !important;"
+            nzCancelText="خیر" nzPopconfirmPlacement="leftBottom" nzPopconfirmTitle="آیا از حذف مطمئن هستید؟" (nzOnConfirm)="deleteRow(data.id)" (nzOnCancel)="cancel()">Delete</a>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+    <nz-pagination [nzPageIndex]="1" [nzTotal]="50"  (nzPageIndexChange)="onPageIndexChange($event)"></nz-pagination>
+</div>
